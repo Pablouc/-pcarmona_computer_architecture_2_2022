@@ -1,11 +1,17 @@
 from math import e
 from random import choices
+from Controller import Controller
+from cpu import Cpu
+from cache import Cache
 
 class Processor:
-  def __init__(self, controller, cpu, cache):
-    self.controller = controller
-    self.cpu = cpu
-    self.cache=cache
+  def __init__(self):#, cpu, cache):
+    self.controller = Controller()
+    self.cpu = Cpu()
+    self.cache=Cache()
+  
+  def control(self):
+    self.controller.MESI()
 
 
   def distribution(self,x,u):
@@ -93,5 +99,4 @@ class Processor:
     return newInst
 
 
-p1=Processor("hola","hola","hola")
-p1.generateInst()
+p1=Processor()
