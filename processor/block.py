@@ -5,6 +5,7 @@ class Block:
 
     state="I"
     dir=bin(0)
+    data=hex(0)
 
-    def __init__(self,block) -> None:
-        self.block=block
+    def __init__(self) -> None:
+        pass
