@@ -7,5 +7,5 @@ class Block:
     dir=bin(0)
     data=hex(0)
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, id) :
+        self.id=id
