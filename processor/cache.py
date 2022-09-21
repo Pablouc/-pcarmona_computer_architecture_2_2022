@@ -2,7 +2,9 @@ from block import Block
 
 class Cache:
 
-
+    writeMiss=False
+    ReadMiss=False
+    
     def __init__(self) -> None:
         self.block1=Block(1)
         self.block2=Block(2)

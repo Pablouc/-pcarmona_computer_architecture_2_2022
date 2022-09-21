@@ -11,11 +11,21 @@ class Cpu:
     def writeCache(self, block, dir, data, stateToChange):
         cache=self.cache
         if(block==""):
-            match self.lastBlockChanged:
-                case 1: cache.block1.dir=dir; cache.block1.state= stateToChange; cache.block1.data=data
-                case 2: cache.block2.dir=dir; cache.block2.state= stateToChange; cache.block2.data=data
-                case 3: cache.block3.dir=dir; cache.block3.state= stateToChange; cache.block3.data=data
-                case 4: cache.block4.dir=dir; cache.block4.state= stateToChange; cache.block4.data=data
+            blockToWrite= self.checkBlockSpace()
+            if(blockToWrite!=""):
+                print("There is a free block") 
+                blockToWrite.dir=dir 
+                blockToWrite.state= stateToChange
+                blockToWrite.data=data
+                self.lastBlockChanged=blockToWrite.id
+            if(blockToWrite==""):
+                print("Applying replacement policy")
+                print(self.lastBlockChanged)
+                match self.lastBlockChanged:
+                    case 1: cache.block1.dir=dir; cache.block1.state= stateToChange; cache.block1.data=data
+                    case 2: cache.block2.dir=dir; cache.block2.state= stateToChange; cache.block2.data=data
+                    case 3: cache.block3.dir=dir; cache.block3.state= stateToChange; cache.block3.data=data
+                    case 4: cache.block4.dir=dir; cache.block4.state= stateToChange; cache.block4.data=data
         else:
             match block:
                 case 1:  cache.block1.state= stateToChange; cache.block1.data=data; self.lastBlockChanged=1
@@ -23,6 +33,16 @@ class Cpu:
                 case 3:  cache.block3.state= stateToChange; cache.block3.data=data; self.lastBlockChanged=3
                 case 4:  cache.block4.state= stateToChange; cache.block4.data=data; self.lastBlockChanged=4
 
+    def checkBlockSpace(self):
+        if(self.cache.block1.dir==bin(0)):
+            return self.cache.block1
+        if(self.cache.block2.dir==bin(0)):
+            return self.cache.block2
+        if(self.cache.block3.dir==bin(0)):
+            return self.cache.block3
+        if(self.cache.block4.dir==bin(0)):
+            return self.cache.block4
+        else: return ""
 
     #Reads the cache
     #Receive the blocks number and the address
@@ -30,10 +50,10 @@ class Cpu:
     def readCache(self, block, dir, state):
         cache=self.cache
         match block:
-                case 1:  state= cache.block1.state; data=cache.block1.data
-                case 2:  state= cache.block2.state; data=cache.block2.data 
-                case 3:  state= cache.block3.state; data=cache.block3.data 
-                case 4:  state= cache.block4.state; data=cache.block4.data
+                case 1:  cache.block1.state=state; data=cache.block1.data
+                case 2:  cache.block2.state=state; data=cache.block2.data 
+                case 3:  cache.block3.state=state; data=cache.block3.data 
+                case 4:  cache.block4.state=state; data=cache.block4.data
         return[block, state, dir, data]
 
     def changeBlockState(self, state, block):
@@ -52,10 +72,11 @@ class Cpu:
         blocks=self.cache.generateBlocksArray()
         counter=1
         for x in blocks:
-            if (x[1]==bin(dir)):
+            if (x[1]==dir):
                 return [counter,x[0],dir]
             counter=counter+1
         return False
+    
     
     #Function to search in the other caches for a specific address
     #Parameter: blocks has the following structure:
@@ -67,7 +88,7 @@ class Cpu:
         for x in caches:
             for y in x: #y = blocks
                 #verifico que tenga la dirección que busco y que es estado no sea inválido
-                if ((y[1]==bin(dir)) & (y[0]!="I")):
+                if ((y[1]==dir) & (y[0]!="I")):
                     return[y[3],y[4],y[0], dir]
             
         return False
@@ -79,8 +100,10 @@ class Cpu:
         for x in caches:
             for y in x: #y = blocks
                 #verifico que tenga la dirección que busco y que es estado no sea inválido
-                if ((y[1]==bin(dir)) & (y[0]!="I")):
+                if ((y[1]==dir) & (y[0]!="I")):
                     foreignCaches.append([y[3],y[4],y[0], dir])
         if(foreignCaches!=[]): return foreignCaches
         else: return False
 
+#cpu=Cpu()
+#cpu.searchInCache(bin(3))
