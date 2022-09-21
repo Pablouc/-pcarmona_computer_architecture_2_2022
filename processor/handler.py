@@ -24,9 +24,21 @@ def getCachesArray():
             blockArray=[state, dir, data]
             currentCache.append(blockArray)
         cachesArray.append(currentCache)
-        print(currentCache)
+        #print(currentCache)
         currentCache=[]
-    
+    return cachesArray
+
+def cutArray(cachenum, cachesArray):
+    del cachesArray[cachenum-1]
+    del cachesArray[cachenum-1]
+    #cacheArray.pop(cachenum)
+    counter=0
+    for x in cachesArray:
+        print(cachesArray[counter])
+        counter=counter+1
+    return cachesArray
+
+cutArray(1, getCachesArray())  
 
             
 getCachesArray()
