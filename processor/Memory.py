@@ -1,9 +1,10 @@
 from block import Block
 
 class Memory:
+    #used to simulate the bus
     flag=False
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.block1=Block(1)
         self.block2=Block(2)
         self.block3=Block(3)

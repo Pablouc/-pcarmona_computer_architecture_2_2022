@@ -8,7 +8,7 @@ class Cpu:
     def __init__(self) :
        self.cache=Cache()
     #When block is empty it means that a replacement is required
-    def writeCache(self, block,dir, data, stateToChange):
+    def writeCache(self, block, dir, data, stateToChange):
         cache=self.cache
         if(block==""):
             match self.lastBlockChanged:
@@ -27,10 +27,10 @@ class Cpu:
     #Reads the cache
     #Receive the blocks number and the address
     # Returns [block's number, state, address, data]               
-    def readCache(self, block, dir):
+    def readCache(self, block, dir, state):
         cache=self.cache
         match block:
-                case 1:  state= cache.block1.state; data=cache.block1.data 
+                case 1:  state= cache.block1.state; data=cache.block1.data
                 case 2:  state= cache.block2.state; data=cache.block2.data 
                 case 3:  state= cache.block3.state; data=cache.block3.data 
                 case 4:  state= cache.block4.state; data=cache.block4.data
@@ -64,13 +64,23 @@ class Cpu:
     #dir is the address we are loocking for.
     #Return: [cache's number, block's number, block's state, dir] or False
     def searchInForeingCaches(self, caches, dir):
-        cacheNum=1
-        blockNum=1
         for x in caches:
             for y in x: #y = blocks
                 #verifico que tenga la dirección que busco y que es estado no sea inválido
                 if ((y[1]==bin(dir)) & (y[0]!="I")):
-                    return[cacheNum,blockNum,y[0], dir]
-                blockNum=blockNum+1
-            cacheNum=cacheNum+1
+                    return[y[3],y[4],y[0], dir]
+            
         return False
+    
+    #Same function than above, but it returns the full list of 
+    #caches with the required address
+    def listOfForeignCaches(self, caches, dir):
+        foreignCaches=[]
+        for x in caches:
+            for y in x: #y = blocks
+                #verifico que tenga la dirección que busco y que es estado no sea inválido
+                if ((y[1]==bin(dir)) & (y[0]!="I")):
+                    foreignCaches.append([y[3],y[4],y[0], dir])
+        if(foreignCaches!=[]): return foreignCaches
+        else: return False
+
