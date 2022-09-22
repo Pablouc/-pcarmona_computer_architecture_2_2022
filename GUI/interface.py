@@ -110,7 +110,7 @@ def generateGrid_Core4():
         
 
 window =tk.Tk()
-window.geometry("1600x600")
+window.geometry("1600x400")
 
 
 #Top frame with the menu
@@ -158,35 +158,59 @@ btn_sendInst=tk.Button(master=frame_Menu,text="Enviar")
 btn_sendInst.pack(side=tk.LEFT,expand=True)
 btn_sendInst.bind('<Button-1>', send_Flag)
 
-#Generating each Core's frame content
-#
-lbl_Core1 = tk.Label(master=frame_Core1, text="CORE 1")
-lbl_Core1.grid()
+#Processor 1 layout
 
-lbl_Core1_Wmiss = tk.Button(master=frame_Core1, text="write miss")
+lbl_Core1 = tk.Label(master=frame_Core1, text="CORE 1", font="bold")
+lbl_Core1.grid()
+lbl_Core1.config(bg="yellow")
+
+lbl_Core1_Wmiss = tk.Label(master=frame_Core1, text="write miss")
 lbl_Core1_Wmiss.grid()
 
-lbl_Core1_Rmiss = tk.Button(master=frame_Core1, text="read miss")
+lbl_Core1_Rmiss = tk.Label(master=frame_Core1, text="read miss")
 lbl_Core1_Rmiss.grid()
 
-lbl_Core2 = tk.Label(master=frame_Core2, text="CORE 2")
+#Processor 2 layout
+lbl_Core2 = tk.Label(master=frame_Core2, text="CORE 2",font="bold")
 lbl_Core2.grid()
+lbl_Core2.config(bg="yellow")
 
-lbl_Core3 = tk.Label(master=frame_Core3, text="CORE 3")
+lbl_Core2_Wmiss = tk.Label(master=frame_Core2, text="write miss")
+lbl_Core2_Wmiss.grid()
+
+lbl_Core2_Rmiss = tk.Label(master=frame_Core2, text="read miss")
+lbl_Core2_Rmiss.grid()
+
+
+#Processor 3 layout
+lbl_Core3 = tk.Label(master=frame_Core3, text="CORE 3",font="bold")
 lbl_Core3.grid()
+lbl_Core3.config(bg="yellow")
 
-lbl_Core4 = tk.Label(master=frame_Core4, text="CORE 4")
+lbl_Core3_Wmiss = tk.Label(master=frame_Core3, text="write miss")
+lbl_Core3_Wmiss.grid()
+
+lbl_Core3_Rmiss = tk.Label(master=frame_Core3, text="read miss")
+lbl_Core3_Rmiss.grid()
+
+
+#Processor 4 layout
+lbl_Core4 = tk.Label(master=frame_Core4, text="CORE 4",font="bold")
 lbl_Core4.grid()
+lbl_Core4.config(bg="yellow")
+
+lbl_Core4_Wmiss = tk.Label(master=frame_Core4, text="write miss")
+lbl_Core4_Wmiss.grid()
+
+lbl_Core4_Rmiss = tk.Label(master=frame_Core4, text="read miss")
+lbl_Core4_Rmiss.grid()
 
 frame_Menu.pack(fill=tk.BOTH, side=tk.TOP,expand=True)
 frame_Core1.pack(fill=tk.BOTH, side=tk.LEFT,expand=True)
 frame_Core2.pack(fill=tk.BOTH, side=tk.LEFT,expand=True)    
 frame_Core3.pack(fill=tk.BOTH, side=tk.LEFT,expand=True)
 frame_Core4.pack(fill=tk.BOTH, side=tk.LEFT,expand=True)
-#frame_Core1.place(x=0, y=100)
-#frame_Core2.place(x=400, y=100 )
-#frame_Core3.place(x=800, y=100 )
-#frame_Core4.place(x=1200, y=100 )
+
 
 
 window.mainloop()
