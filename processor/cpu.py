@@ -50,7 +50,7 @@ class Cpu:
     #Receive the blocks number and the address
     # Returns [block's number, state, address, data]               
     def readCache(self, block, dir, state):
-        time.sleep(0.1)
+        time.sleep(0.01)
         cache=self.cache
         match block:
                 case 1:  cache.block1.state=state; data=cache.block1.data

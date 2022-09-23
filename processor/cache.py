@@ -3,7 +3,7 @@ from block import Block
 class Cache:
 
     writeMiss=False
-    ReadMiss=False
+    readMiss=False
     
     def __init__(self) -> None:
         self.block1=Block(1)

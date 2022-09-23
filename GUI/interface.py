@@ -3,30 +3,10 @@ import sys
 sys.path.insert(1, 'C:/Users/Pablo/Desktop/TEC/II Semestre 2022/Arqui II/Proyecto1/-pcarmona_computer_architecture_2_2022/processor')
 import handler
 import concurrent.futures
-
-
-
-
-def sendInst(event):
-    pass
+import time
 
 
             
-def step_By_Step(event):
-    pass
-
-
-def pause(event):
-    pass
-
-
-def continuous(event):
-    pass
-
-
-
-
-
 
 #Functions
 
@@ -72,9 +52,19 @@ def generateGrid_Core1():
                     label.pack()
                     continue
             
-            label = tk.Label(master=gridFrame1, text=f"0", width=8, height=2)
+            label = tk.Label(master=gridFrame1, text=f"", width=8, height=2)
             label.pack()
     lbl_Core1_InstData.config(text=handler.p1.instruction)
+    if(handler.p1.Controller.cpu.cache.writeMiss==True):
+        lbl_Core1_Wmiss.config(bg="#DC5032")
+    if(handler.p1.Controller.cpu.cache.writeMiss==False):
+        lbl_Core1_Wmiss.config(bg="#808080")
+    
+    if(handler.p1.Controller.cpu.cache.readMiss==True):
+        lbl_Core1_Rmiss.config(bg="#DC5032")
+
+    if(handler.p1.Controller.cpu.cache.readMiss==False):
+        lbl_Core1_Rmiss.config(bg="#808080")
     #frame_Core1.after(3000,generateGrid_Core1)
             
 def generateGrid_Core2():
@@ -119,9 +109,19 @@ def generateGrid_Core2():
                     label.pack()
                     continue
             
-            label = tk.Label(master=gridFrame2, text=f"0", width=8, height=2)
+            label = tk.Label(master=gridFrame2, text=f"", width=8, height=2)
             label.pack()
     lbl_Core2_InstData.config(text=handler.p2.instruction)
+    if(handler.p2.Controller.cpu.cache.writeMiss==True):
+        lbl_Core2_Wmiss.config(bg="#DC5032")
+    if(handler.p2.Controller.cpu.cache.writeMiss==False):
+        lbl_Core2_Wmiss.config(bg="#808080")
+    
+    if(handler.p2.Controller.cpu.cache.readMiss==True):
+        lbl_Core2_Rmiss.config(bg="#DC5032")
+
+    if(handler.p2.Controller.cpu.cache.readMiss==False):
+        lbl_Core2_Rmiss.config(bg="#808080")
     #frame_Core2.after(3000,generateGrid_Core2)
 
 def generateGrid_Core3():
@@ -166,10 +166,20 @@ def generateGrid_Core3():
                     label.pack()
                     continue
             
-            label = tk.Label(master=gridFrame3, text=f"0", width=8, height=2)
+            label = tk.Label(master=gridFrame3, text=f"", width=8, height=2)
             label.pack()
 
     lbl_Core3_InstData.config(text=handler.p3.instruction)
+    if(handler.p3.Controller.cpu.cache.writeMiss==True):
+        lbl_Core3_Wmiss.config(bg="#DC5032")
+    if(handler.p3.Controller.cpu.cache.writeMiss==False):
+        lbl_Core3_Wmiss.config(bg="#808080")
+    
+    if(handler.p3.Controller.cpu.cache.readMiss==True):
+        lbl_Core3_Rmiss.config(bg="#DC5032")
+
+    if(handler.p3.Controller.cpu.cache.readMiss==False):
+        lbl_Core3_Rmiss.config(bg="#808080")
     #frame_Core3.after(3000,generateGrid_Core3)
 
 def generateGrid_Core4():
@@ -214,12 +224,24 @@ def generateGrid_Core4():
                     label.pack()
                     continue
             
-            label = tk.Label(master=gridFrame4, text=f"0", width=8, height=2)
+            label = tk.Label(master=gridFrame4, text=f"", width=8, height=2)
             label.pack()
     lbl_Core4_InstData.config(text=handler.p4.instruction)
+    if(handler.p4.Controller.cpu.cache.writeMiss==True):
+        lbl_Core4_Wmiss.config(bg="#DC5032")
+
+    if(handler.p4.Controller.cpu.cache.writeMiss==False):
+        lbl_Core4_Wmiss.config(bg="#808080")
+    
+    if(handler.p4.Controller.cpu.cache.readMiss==True):
+        lbl_Core4_Rmiss.config(bg="#DC5032")
+
+    if(handler.p4.Controller.cpu.cache.readMiss==False):
+        lbl_Core4_Rmiss.config(bg="#808080")
     #frame_Core4.after(3000,generateGrid_Core4)
 
 def generateGrid_Mem():
+    lbl_LastInst.config(text=str(handler.lastInst)) 
     for i in range(9):
         for j in range(3):
             gridFrameMem = tk.Frame(master=frame_Mem,relief=tk.RAISED,borderwidth=1)
@@ -259,10 +281,14 @@ def generateGrid_Mem():
                     label = tk.Label(master=gridFrameMem, text=f"Bloque {i}", width=10, height=2)
                     label.pack()
                     continue
-            
-            label = tk.Label(master=gridFrameMem, text=f"0", width=8, height=2)
-            label.pack()  
+        
+            label = tk.Label(master=gridFrameMem, text=f"", width=8, height=2)
+            label.pack()
     #frame_Mem.after(3000,generateGrid_Mem)    
+
+
+        
+    
 
 def next_Step(event):
     #Threads 
@@ -275,6 +301,44 @@ def next_Step(event):
     generateGrid_Core4()
     generateGrid_Mem()
 
+def run_n_update():
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        for index in range(1,5):
+            executor.submit(handler.runProcessor,1,[], index)
+    generateGrid_Core1()
+    generateGrid_Core2()
+    generateGrid_Core3()
+    generateGrid_Core4()
+    generateGrid_Mem()
+
+def continuous(event):
+    while(handler.pause==False):
+        window.after(5000,run_n_update)
+    
+
+def pause(event):
+    handler.pause=True
+
+def sendInst(event):
+    #To get input_Inst data
+    instruction = input_Inst.get()
+    instruction=instruction.split(',')
+    processor=instruction[0]
+    processor=int(processor)
+    instruction[0]=processor
+
+    #Threads 
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        for index in range(1,5):
+            if(index==instruction[0]):
+                executor.submit(handler.runProcessor,2,instruction, index)
+                continue
+            executor.submit(handler.runProcessor,1,[], index)
+    generateGrid_Core1()
+    generateGrid_Core2()
+    generateGrid_Core3()
+    generateGrid_Core4()
+    generateGrid_Mem()
 
 window =tk.Tk()
 window.geometry("1500x900")
@@ -303,10 +367,6 @@ btn_Pause=tk.Button(master=frame_Menu, text="Pausa",  font=(25))
 btn_Pause.pack( side=tk.LEFT,expand=True)
 btn_Pause.bind('<Button-1>', pause)
 
-btn_Step_by_Step=tk.Button(master=frame_Menu, text="Paso a paso", font=(25))
-btn_Step_by_Step.pack(side=tk.LEFT,expand=True)
-btn_Step_by_Step.bind('<Button-1>', step_By_Step)
-
 btn_Next_Step=tk.Button(master=frame_Menu, text="Siguiente", font=(25))
 btn_Next_Step.pack(side=tk.LEFT,expand=True)
 btn_Next_Step.bind('<Button-1>', next_Step)
@@ -316,8 +376,7 @@ lbl_Inst.pack( side=tk.LEFT,expand=True)
 
 input_Inst = tk.Entry(master=frame_Menu, font=(25))
 input_Inst.pack( side=tk.LEFT,expand=True)
-#To get input_Inst data
-# entry.get()
+
 
 btn_sendInst=tk.Button(master=frame_Menu,text="Enviar", font=(25)) 
 btn_sendInst.pack(side=tk.LEFT,expand=True)
@@ -329,10 +388,10 @@ lbl_Core1 = tk.Label(master=frame_Core1, text="CORE 1", font="bold")
 lbl_Core1.grid(row=5, column=0)
 lbl_Core1.config(bg="yellow")
 
-lbl_Core1_Wmiss = tk.Label(master=frame_Core1, relief=tk.RAISED,text="write miss" )
+lbl_Core1_Wmiss = tk.Label(master=frame_Core1, relief=tk.RAISED,text="write miss",font="bold" )
 lbl_Core1_Wmiss.grid(row=5, column=1)
 
-lbl_Core1_Rmiss = tk.Label(master=frame_Core1,relief=tk.RAISED, text="read miss")
+lbl_Core1_Rmiss = tk.Label(master=frame_Core1,relief=tk.RAISED, text="read miss",font="bold")
 lbl_Core1_Rmiss.grid(row=5, column=2)
 
 lbl_Core1_Inst = tk.Label(master=frame_Core1,relief=tk.RAISED, text="Instrucción", font="bold")
@@ -402,10 +461,16 @@ lbl_Core4_InstData.grid(row=6, column=1)
 generateGrid_Core4()
 
 #Memory layout
+lbl_LastInst = tk.Label(master=frame_Mem, text="",font="bold")
+lbl_LastInst.grid(row=11, column=0, columnspan=3)
+
 generateGrid_Mem()
+
 lbl_Mem = tk.Label(master=frame_Mem, text="Memory",font="bold")
-lbl_Mem.grid()
+lbl_Mem.grid(row=9, column=0)
 lbl_Mem.config(bg="yellow")
+
+
 
 
 
@@ -414,6 +479,7 @@ frame_Core2.grid(row=1, column=1, padx=10, pady=15)
 frame_Core3.grid(row=2, column=0, padx=10, pady=10)
 frame_Core4.grid(row=2, column=1, padx=10, pady=10)
 frame_Mem.grid(row=1, column=3, rowspan=2, padx=20)
+
 
 frame_Menu.grid(row=0, column=0, columnspan=2)
 

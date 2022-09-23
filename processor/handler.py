@@ -10,8 +10,7 @@ p2=Processor(2)
 p3=Processor(3)
 p4=Processor(4)
 mem=Memory()
-
-refreshCycle=0
+lastInst=None
 
 newInstruction = generateInst()
 def getCachesArray():
@@ -110,10 +109,10 @@ def mesiFollowUp(ownProcessor, mesiResult):
             #-------------------------------the bus is free
             #Executing WRITE
             ownProcessor.Controller.cpu.writeCache(myBlockToDo[2],myBlockToDo[3], myBlockToDo[4],myBlockToDo[1])
-                         
-
+                          
 
 def runProcessor(mode,instruction, coreNum):
+    global lastInst
     existInMem=False
     if(mode==1):
         #Making sure not to read something that does not exist
@@ -122,13 +121,20 @@ def runProcessor(mode,instruction, coreNum):
             if(instruction[1]=="READ"):
                 if(mem.findInMem(instruction[2])!=False):
                     existInMem=True
-            else: existInMem=True
+            else: 
+                existInMem=True
+                
             
+    
     processor= getProcessor(coreNum)
+    instruction[0]=coreNum
     #processorInst= del instruction[0]
     processor.instruction= ' '.join([str(elem) for elem in instruction])
+    processor.Controller.cpu.cache.writeMiss=False
+    processor.Controller.cpu.cache.readMiss=False
     cachesArray=getCachesArray()
     cachesArray=cutArray(coreNum,cachesArray)
+    lastInst=processor.instruction
     mesiResult=processor.Controller.MESI(instruction,cachesArray)
     mesiFollowUp(coreNum, mesiResult)
     print("Cache memory")
@@ -140,7 +146,7 @@ def runProcessor(mode,instruction, coreNum):
 
 #--------------------------------------Main Program----------------------------------
 
-
+pause=False
 
             
 

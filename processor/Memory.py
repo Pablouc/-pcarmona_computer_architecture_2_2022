@@ -43,7 +43,7 @@ class Memory:
             block=int(dir[2:],2)+1
             #if (findBlock!=False): 
                 #if(findBlock[0]!=""):
-            time.sleep(2)
+            time.sleep(1)
             match block:
                 case 1: self.block1.data=data; self.block1.dir=dir
                 case 2: self.block2.data=data; self.block2.dir=dir
@@ -58,7 +58,7 @@ class Memory:
 
     def readMemory(self,dir):
         with self._lock:
-            time.sleep(2)
+            time.sleep(1)
             findBlock=self.findInMem(dir)
             print("FindBlock")
             print(findBlock)

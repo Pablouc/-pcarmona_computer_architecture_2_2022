@@ -26,7 +26,9 @@ class Controller:
     if (foreignSearch!=False):
       if(searchResult!=False):
         myBlockToDo=["WRITE","S",searchResult[0], ""]
+      #Generar read miss
       if(searchResult==False):
+        self.cpu.cache.readMiss=True
         myBlockToDo=["WRITE","S","", ""]
       #Posibles estados de los bloques a leer
       match foreignSearch[2]:                         
@@ -36,7 +38,9 @@ class Controller:
 
     #Nadie lo tiene y voy a leer de memoria
     #Implica que escribo un nuevo bloque de cache con estado E
+    #Genero read miss
     else:
+        self.cpu.cache.readMiss=True
         myBlockToDo=["WRITE","E","", "WB"]
         print("******3****")
         return [3,myBlockToDo, dir, [""]]
@@ -50,6 +54,7 @@ class Controller:
     if(searchResult==False):
       #Aqui hay un write miss
       #Lo  quiero escribir, pero no lo tengo
+      self.cpu.cache.writeMiss=True
       if(type(foreignSearch)==list):
         myBlockToDo=["WRITE","M","", dir, data]
         foreingBlockToDo=["","I", ""]
@@ -82,6 +87,7 @@ class Controller:
     #Aqui hay un write miss, estoy en invalido y paso a modificado
     #Nadie más lo tiene
     else:
+      self.cpu.cache.writeMiss=True
       myBlockToDo=["WRITE","M", "", dir, data]
       print("******5***********")
       self.cpu.writeCache("",dir,data,"M")

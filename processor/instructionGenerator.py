@@ -2,7 +2,6 @@
 from math import e
 from random import choices
 
-
 def distribution(x,u):
     prob=0
     fact=1
@@ -43,6 +42,7 @@ def setProbabilities():
     
     return [pNumber,operation,dir,data]
 
+
 def generateInst():
     processor=0
     op=0
@@ -69,7 +69,6 @@ def generateInst():
     #print(inst)
     inst=changeInstSyntax(inst)
     #print(inst)
-
     return inst
 
 def changeInstSyntax( instruction):
@@ -77,13 +76,10 @@ def changeInstSyntax( instruction):
     newOp=""
     match instruction[1]:
         case 1:
-            newOp="CALC"
+            newOp="CALC"; newInst=[instruction[0], newOp]
         case 2:
-            newOp="WRITE"
+            newOp="WRITE"; newInst=[instruction[0], newOp, bin(instruction[2]), hex(instruction[3])]
         case 3:
-            newOp="READ"
+            newOp="READ"; newInst=[instruction[0], newOp, bin(instruction[2])]
 
-
-    newInst=[instruction[0], newOp, bin(instruction[2]), hex(instruction[3])]
     return newInst
-
