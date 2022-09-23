@@ -7,6 +7,7 @@ class Processor:
   #Ex.If this is the processor 1: 
   #cachesArray=[cache2,cache3,cache4]
   cachesArray=[]
+  instruction=""
 
   def __init__(self, id):
     self.id=id

@@ -48,6 +48,8 @@ class Controller:
     searchResult=self.cpu.searchInCache(dir)
     foreignSearch=self.cpu.searchInForeingCaches(cachesArray,dir)
     if(searchResult==False):
+      #Aqui hay un write miss
+      #Lo  quiero escribir, pero no lo tengo
       if(type(foreignSearch)==list):
         myBlockToDo=["WRITE","M","", dir, data]
         foreingBlockToDo=["","I", ""]
@@ -77,12 +79,13 @@ class Controller:
         return ["Ready"]
         
     #Cuando nadie lo tiene
-    #Toca escribirlo en mem y escribirlo en cache
-    #Quedamos en estado E
+    #Aqui hay un write miss, estoy en invalido y paso a modificado
+    #Nadie más lo tiene
     else:
-      myBlockToDo=["WRITE","E", "", dir, data]
+      myBlockToDo=["WRITE","M", "", dir, data]
       print("******5***********")
-      return[5,myBlockToDo,dir, [""]]
+      self.cpu.writeCache("",dir,data,"M")
+      #return[5,myBlockToDo,dir, [""]]
 
       
       

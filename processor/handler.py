@@ -1,13 +1,17 @@
-import concurrent.futures
 from Processor import Processor
 from instructionGenerator import *
 from Memory import Memory
+import threading
+import concurrent.futures
+
 
 p1=Processor(1)
 p2=Processor(2)
 p3=Processor(3)
 p4=Processor(4)
 mem=Memory()
+
+refreshCycle=0
 
 newInstruction = generateInst()
 def getCachesArray():
@@ -121,56 +125,31 @@ def runProcessor(mode,instruction, coreNum):
             else: existInMem=True
             
     processor= getProcessor(coreNum)
+    #processorInst= del instruction[0]
+    processor.instruction= ' '.join([str(elem) for elem in instruction])
     cachesArray=getCachesArray()
     cachesArray=cutArray(coreNum,cachesArray)
     mesiResult=processor.Controller.MESI(instruction,cachesArray)
     mesiFollowUp(coreNum, mesiResult)
     print("Cache memory")
     getCachesArray()
-    #print("Memory")
+    print("Memory")
     mem.printMem()
 
 
 
 #--------------------------------------Main Program----------------------------------
 
-#Global Variables
-next_Step=False
-continuous=False
-step_By_Step=True
-pause=False
-new_Inst=False
-entry_Inst=[]
 
 
-
-def run_All(index):
-    print("runing processor")
-    print(index)
-    while True:
-        if(continuous==True):
-            while(pause!=True):
-                runProcessor(1,[],index)
-            if(new_Inst==True):
-                runProcessor(2,entry_Inst, index)
-        
-        if(step_By_Step==True):
-            runProcessor(1,[],index)
-            if(next_Step==True):
-                runProcessor(1,[],index)
-                next_Step=False
-            if(new_Inst==True):
-                runProcessor(2,entry_Inst, index)
+            
 
 
 
             
 
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-    for index in range(1,5):
-        executor.submit(run_All,index)
-    # Another thread is required for the interface
+
 
 
 
