@@ -1,0 +1,20 @@
+instruction1=[1,"WRITE",bin(3), hex(50)]
+instruction2=[4,"WRITE",bin(2), hex(20)]
+instruction3=[3,"WRITE",bin(3), hex(10)]
+instruction4=[1,"READ",bin(3)]
+instruction5=[2,"READ",bin(2)]
+instruction6=[2,"READ",bin(3)]
+instruction7=[2,"WRITE",bin(4), hex(15)]
+instruction8=[2,"WRITE",bin(5), hex(25)]
+instruction9=[2,"WRITE",bin(6), hex(35)]
+instruction10=[3,"READ",bin(5)]
+runProcessor(instruction1)
+runProcessor(instruction2)
+runProcessor(instruction3)
+runProcessor(instruction4)
+runProcessor(instruction5)
+runProcessor(instruction6)
+runProcessor(instruction7)
+runProcessor(instruction8)
+runProcessor(instruction9)
+runProcessor(instruction10)
