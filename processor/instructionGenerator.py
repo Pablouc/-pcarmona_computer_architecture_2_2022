@@ -66,9 +66,9 @@ def generateInst():
 
     #Instrucción generada
     inst=[processor, op, dir, data]
-    print(inst)
+    #print(inst)
     inst=changeInstSyntax(inst)
-    print(inst)
+    #print(inst)
 
     return inst
 

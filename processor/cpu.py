@@ -1,4 +1,5 @@
 from cache import Cache
+import time
 
 
 class Cpu:
@@ -9,6 +10,7 @@ class Cpu:
        self.cache=Cache()
     #When block is empty it means that a replacement is required
     def writeCache(self, block, dir, data, stateToChange):
+        time.sleep(2)
         cache=self.cache
         if(block==""):
             blockToWrite= self.checkBlockSpace()
@@ -48,6 +50,7 @@ class Cpu:
     #Receive the blocks number and the address
     # Returns [block's number, state, address, data]               
     def readCache(self, block, dir, state):
+        time.sleep(2)
         cache=self.cache
         match block:
                 case 1:  cache.block1.state=state; data=cache.block1.data
@@ -57,6 +60,7 @@ class Cpu:
         return[block, state, dir, data]
 
     def changeBlockState(self, state, block):
+        time.sleep(2)
         match block:
             case 1: self.cache.block1.state=state
             case 2: self.cache.block2.state=state

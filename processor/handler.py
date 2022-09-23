@@ -1,5 +1,4 @@
-from dis import Instruction
-from functools import cache
+import concurrent.futures
 from Processor import Processor
 from instructionGenerator import *
 from Memory import Memory
@@ -110,38 +109,69 @@ def mesiFollowUp(ownProcessor, mesiResult):
                          
 
 
-def runProcessor(instruction):
-    #instruction=generateInst()
-
-    processor= getProcessor(instruction[0])
-
+def runProcessor(mode,instruction, coreNum):
+    existInMem=False
+    if(mode==1):
+        #Making sure not to read something that does not exist
+        while(existInMem==False):
+            instruction=generateInst()
+            if(instruction[1]=="READ"):
+                if(mem.findInMem(instruction[2])!=False):
+                    existInMem=True
+            else: existInMem=True
+            
+    processor= getProcessor(coreNum)
     cachesArray=getCachesArray()
-    cachesArray=cutArray(instruction[0],cachesArray)
+    cachesArray=cutArray(coreNum,cachesArray)
     mesiResult=processor.Controller.MESI(instruction,cachesArray)
-    mesiFollowUp(instruction[0], mesiResult)
+    mesiFollowUp(coreNum, mesiResult)
     print("Cache memory")
     getCachesArray()
     #print("Memory")
     mem.printMem()
 
 
-instruction1=[1,"WRITE",bin(3), hex(50)]
-instruction2=[4,"WRITE",bin(2), hex(20)]
-instruction3=[3,"WRITE",bin(3), hex(10)]
-instruction4=[1,"READ",bin(3)]
-instruction5=[2,"READ",bin(2)]
-instruction6=[2,"READ",bin(3)]
-instruction7=[2,"WRITE",bin(4), hex(15)]
-instruction8=[2,"WRITE",bin(5), hex(25)]
-instruction9=[2,"WRITE",bin(6), hex(35)]
-instruction10=[3,"READ",bin(5)]
-runProcessor(instruction1)
-runProcessor(instruction2)
-runProcessor(instruction3)
-runProcessor(instruction4)
-runProcessor(instruction5)
-runProcessor(instruction6)
-runProcessor(instruction7)
-runProcessor(instruction8)
-runProcessor(instruction9)
-runProcessor(instruction10)
+
+#--------------------------------------Main Program----------------------------------
+
+#Global Variables
+next_Step=False
+continuous=False
+step_By_Step=True
+pause=False
+new_Inst=False
+entry_Inst=[]
+
+
+
+def run_All(index):
+    print("runing processor")
+    print(index)
+    while True:
+        if(continuous==True):
+            while(pause!=True):
+                runProcessor(1,[],index)
+            if(new_Inst==True):
+                runProcessor(2,entry_Inst, index)
+        
+        if(step_By_Step==True):
+            runProcessor(1,[],index)
+            if(next_Step==True):
+                runProcessor(1,[],index)
+                next_Step=False
+            if(new_Inst==True):
+                runProcessor(2,entry_Inst, index)
+
+
+
+            
+
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+    for index in range(1,5):
+        executor.submit(run_All,index)
+    # Another thread is required for the interface
+
+
+
+
